@@ -1,5 +1,5 @@
 ---
-title: "Carrying a Generic Identifier in IPv6 Extension Header"
+title: "Carrying a Generic Identifier in IPv6 packets"
 abbrev: "Generic Identifier"
 category: std
 
@@ -8,7 +8,7 @@ submissiontype: IETF  # also: "independent", "IAB", or "IRTF"
 number:
 date:
 consensus: true
-v: 3
+v: 0
 area: "Internet"
 workgroup: "IPv6 Maintenance"
 keyword:
@@ -41,8 +41,8 @@ informative:
 --- abstract
 
 Some recent use cases seem to have a need for carrying IDs within packets. Two
-examples are {{?I-D.draft-ietf-6man-enhanced-vpn-vtn-id}} and
-{{?I-D.draft-li-6man-topology-id}}. While they might perfectly make sense on
+examples are *I-D.draft-ietf-6man-enhanced-vpn-vtn-id* and
+*I-D.draft-li-6man-topology-id*. While they might perfectly make sense on
 their own, each document requires IANA to allocate a new code point for a new
 option, which could quickly exhaust the allocation space if similar designs are
 proposed in the future. As an example, one might need an 8-bit ID, while another
@@ -108,8 +108,9 @@ where:
 
 - Generic ID:  variable length field.
 
-Note: as an example, {{?I-D.draft-li-6man-topology-id}} should use this option
-to carry the 16-bit ID it defines.
+Note: as an example, both {{?I-D.draft-ietf-6man-enhanced-vpn-vtn-id-00}} and
+{{?I-D.draft-li-6man-topology-id}} should use this option to carry IDs they
+define respectively.
 
 ## Generic Context-ID Option
 
@@ -122,7 +123,7 @@ generically in IPv6 packets, as defined below:
 		                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		                        |  Option Type  |  Opt Data Len |
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|                         Context-Type                          |
+	|         Context-Type          |           Reserved            |
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	|                                                               |
 	~                Context Data (variable length)                 ~
@@ -139,7 +140,10 @@ where:
 - Opt Data Len:  8-bit unsigned integer.  Length of this option, in octets, not
        including the first 2 octets.
 
-- Context-Type:  32-bit field as defined in [](#context-type).
+- Context-Type:  16-bit field as defined in [](#context-type).
+
+- Reserved:  16-bit field MUST be set to zero upon transmission and ignored
+       upon reception.
 
 - Context Data:  variable length field. Context-Type-specific data.
 
@@ -159,7 +163,7 @@ http://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#ipv6-param
 	act chg rest
 	--------------------------------------------------------------
 	00   0  TBD      Generic ID Option             [This document]
-	00   1  TBD      Generic Context-ID Option     [This document]
+	00   0  TBD      Generic Context-ID Option     [This document]
 
 
 This document also requests IANA to define a registry group named "Generic
@@ -174,9 +178,8 @@ The subsequent subsections detail the registries therein contained.
 
 ## Context-Type
 
-This registry defines (2^32 - 1) code points for the Context-Type field, to
-identify the type of context. The following code points are defined in this
-document:
+This registry defines 65535 code points for the Context-Type field to identify
+the type of context. The following code points are defined in this document:
 
 - 0:  Reserved
 - 1:  VTN {{?I-D.draft-ietf-6man-enhanced-vpn-vtn-id}}
